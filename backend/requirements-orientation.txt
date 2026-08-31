@@ -1,0 +1,5 @@
+# Optional local four-way document orientation classifier.
+# Install this file in the OCR worker environment to enable
+# PP-LCNet_x1_0_doc_ori; the application falls back safely when omitted.
+paddlepaddle>=3.0.0,<4.0.0
+paddleocr>=3.0.3,<4.0.0

@@ -1,0 +1,50 @@
+version: 1
+
+paths:
+  workspace_root: ..
+  output_root: data/ocr_outputs
+
+ocr:
+  active_provider: pp_ocrv6
+  orientation:
+    enabled: true
+    model: PP-LCNet_x1_0_doc_ori
+    device: cpu
+
+  providers:
+    pp_ocrv6:
+      type: pp_ocrv6
+      enabled: true
+      base_url: http://192.168.110.160:8280
+      endpoint: /layout-parsing
+      health_endpoint: /health/ready
+      timeout: 120
+      retries: 1
+      concurrency: 8
+      supports_pdf: false
+      max_image_side: 1920
+
+documents:
+  id_card:
+    name: 身份证
+    target_codes: [DG12, DG13]
+    default_input_root: test_data
+    supported_providers: [pp_ocrv6]
+
+  driver_license:
+    name: 驾驶证
+    target_codes: [DG14]
+    default_input_root: test_data
+    supported_providers: [pp_ocrv6]
+
+  registration_certificate:
+    name: 登记证
+    target_codes: [Z001]
+    default_input_root: test_data
+    supported_providers: [pp_ocrv6]
+
+  vehicle_license:
+    name: 行驶证
+    target_codes: [Z002]
+    default_input_root: test_data
+    supported_providers: [pp_ocrv6]

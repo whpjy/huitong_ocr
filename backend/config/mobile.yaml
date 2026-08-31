@@ -1,0 +1,18 @@
+version: 1
+
+mobile:
+  # 开启：预处理 -> PP-OCR质量闸门 -> 混元 -> 复用PP结果融合；关闭：预处理后双路并行。
+  image_quality:
+    enabled: true
+
+  # 两个模型必须且只能启用一个；修改后重启后端生效。
+  models:
+    hunyuan_ocr:
+      enabled: false
+      model_key: multimodal:hunyuan_ocr
+      label: HunyuanOCR
+
+    hunyuan_ocr_ppocr:
+      enabled: true
+      model_key: hybrid:hunyuan_ocr
+      label: HunyuanOCR + PP-OCRv6

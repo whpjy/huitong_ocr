@@ -1,0 +1,55 @@
+version: 1
+
+paths:
+  output_root: data/multimodal_outputs
+
+multimodal:
+  active_provider: hunyuan_ocr
+
+  preprocessing:
+    document_crop:
+      enabled: true
+      perspective_correction: true
+      detection_max_side: 1600
+      min_area_ratio: 0.10
+      max_area_ratio: 0.70
+      min_rectangularity: 0.65
+      max_outside_edge_ratio: 0.15
+      min_aspect_ratio: 1.15
+      max_aspect_ratio: 3.80
+      padding_ratio: 0.04
+      jpeg_quality: 95
+
+  prompts:
+    general_system: 请忠实识别图片中的全部可见文字，不要猜测或补全。
+    general_user: 请输出图片中的全部可见文字。
+    hunyuan_general_system: 请忠实识别图片中的全部可见文字，不要猜测或补全。
+    hunyuan_general_user: 请使用 Markdown 输出图片中的全部可见文字。
+    document_system_prefix: |-
+      当前输入是证件原始图片。请直接依据图片中的可见内容完成字段抽取，
+      不得使用外部知识猜测、补全或纠正图片中没有明确出现的信息。
+    document_user_prefix: |-
+      请综合阅读本消息中的所有证件图片，按照以下字段定义与业务规则输出结果。
+
+  providers:
+    hunyuan_ocr:
+      type: openai_compatible
+      enabled: true
+      input_mode: vision
+      base_url: http://192.168.110.160:4406/v1
+      endpoint: /chat/completions
+      # 本地服务不校验密钥时使用占位值；环境变量存在时会覆盖它。
+      api_key: local
+      api_key_env: HUNYUAN_OCR_API_KEY
+      model: HunyuanOCR
+      display_name: HunyuanOCR 1.5
+      timeout: 180
+      max_attempts: 2
+      concurrency: 4
+      temperature: 0.0
+      response_format:
+      vision_max_image_side: 1920
+      vision_content_order: images_first
+      vision_response_adapter: hunyuan_ocr
+      extra_body:
+        max_tokens: 2048

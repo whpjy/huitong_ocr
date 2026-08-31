@@ -1,0 +1,13 @@
+http://{$MOBILE_HTTP_HOST}:{$MOBILE_HTTP_PORT:5173} {
+	# Keep the browser and API on one HTTP origin. The backend only listens
+	# inside the container and is reached through this reverse proxy.
+	handle /api/* {
+		reverse_proxy {$OCR_API_UPSTREAM:127.0.0.1:8000}
+	}
+
+	handle {
+		root * .
+		header Cache-Control "no-store, no-cache, must-revalidate"
+		file_server
+	}
+}

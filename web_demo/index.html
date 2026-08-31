@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f9fc" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>证件识别</title>
+    <link rel="stylesheet" href="./styles.css?v=20260825-fixed-webview-header-v13" />
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <section class="screen screen-home is-active" data-screen="home" aria-labelledby="home-title">
+        <header class="hero">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M7 5.5h7M5.5 7v7m21-7v7M18 5.5h7M7 26.5h7m-8.5-8v7m21-7v7M18 26.5h7"/><rect x="9" y="10" width="14" height="12" rx="2"/><path d="M12 14h8m-8 4h5"/></svg>
+          </div>
+          <p class="eyebrow">智能证件识别</p>
+          <h1 id="home-title">选择需要识别的证件</h1>
+          <p class="hero-copy">拍照或上传证件图片，快速提取关键信息</p>
+        </header>
+
+        <div class="document-list">
+          <button class="document-card" type="button" data-action="open-document" data-document="id_card">
+            <span class="document-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="30" rx="5"/><circle cx="16" cy="22" r="5"/><path d="M9.5 33c1.2-4 3.4-6 6.5-6s5.3 2 6.5 6M27 18h10m-10 6h10m-10 6h7"/></svg>
+            </span>
+            <span class="document-copy"><strong>身份证</strong><small>识别人像面或国徽面</small></span>
+            <span class="chevron" aria-hidden="true">›</span>
+          </button>
+
+          <button class="document-card" type="button" data-action="open-document" data-document="driver_license">
+            <span class="document-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="30" rx="4"/><circle cx="16" cy="22" r="4"/><path d="M10 32c1.1-3.4 3.1-5 6-5s4.9 1.6 6 5m6-12h8m-8 6h8m-8 6h5"/></svg>
+            </span>
+            <span class="document-copy"><strong>驾驶证</strong><small>驾驶人及准驾信息</small></span>
+            <span class="chevron" aria-hidden="true">›</span>
+          </button>
+
+          <button class="document-card" type="button" data-action="open-document" data-document="vehicle_license">
+            <span class="document-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><rect x="7" y="8" width="34" height="32" rx="4"/><path d="M13 15h14m-14 7h22m-22 6h22m-22 6h14"/></svg>
+            </span>
+            <span class="document-copy"><strong>行驶证</strong><small>车辆及所有人信息</small></span>
+            <span class="chevron" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <p class="privacy-note"><span aria-hidden="true">⌾</span> 图片仅用于本次识别，不在浏览器中留存</p>
+      </section>
+
+      <section class="screen" data-screen="method" aria-labelledby="method-title">
+        <header class="topbar">
+          <button class="icon-button" type="button" data-action="home" aria-label="返回首页">‹</button>
+          <h2 id="method-title">证件识别</h2>
+          <span class="topbar-spacer"></span>
+        </header>
+        <div class="method-content">
+          <div class="side-upload-list" aria-label="证件双面上传">
+            <div class="side-upload-card" data-action="select-side" data-side="front" role="button" tabindex="0">
+              <span class="side-card-label" data-side-label="front">正面</span>
+              <span class="side-card-status" data-side-status="front">点击上传</span>
+              <span class="side-card-art portrait-art" aria-hidden="true">
+                <i class="art-lines"></i><i class="art-avatar"></i><i class="art-number"></i>
+              </span>
+              <span class="id-upload-plus" aria-hidden="true">+</span>
+              <span class="id-upload-prompt" data-upload-prompt="front">点击上传人像面</span>
+              <img data-side-image="front" alt="证件正面预览" />
+              <button class="view-image-button" type="button" data-action="view-image" data-side="front" hidden>点击查看大图</button>
+            </div>
+            <div class="side-upload-card" data-action="select-side" data-side="back" data-two-sided-only role="button" tabindex="0">
+              <span class="side-card-label" data-side-label="back">反面</span>
+              <span class="side-card-status" data-side-status="back">点击上传</span>
+              <span class="side-card-art emblem-art" aria-hidden="true">
+                <i class="art-emblem">★</i><i class="art-title"></i><i class="art-validity"></i>
+              </span>
+              <span class="id-upload-plus" aria-hidden="true">+</span>
+              <span class="id-upload-prompt" data-upload-prompt="back">点击上传国徽面</span>
+              <img data-side-image="back" alt="证件反面预览" />
+              <button class="view-image-button" type="button" data-action="view-image" data-side="back" hidden>点击查看大图</button>
+            </div>
+          </div>
+          <input id="album-input" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
+          <input id="camera-fallback-input" class="visually-hidden" type="file" accept="image/*" capture="environment" />
+          <p class="id-security-note" data-id-card-only hidden><span aria-hidden="true">⌾</span> 图片仅用于本次身份识别，请确保上传本人证件</p>
+        </div>
+        <div class="document-submit-bar">
+          <button id="document-submit-button" type="button" data-action="submit-document" disabled>提交</button>
+        </div>
+      </section>
+
+      <section class="screen camera-screen" data-screen="camera" aria-label="拍摄证件">
+        <video id="camera-video" autoplay playsinline muted></video>
+        <canvas id="camera-canvas" class="visually-hidden"></canvas>
+        <div class="camera-shade"></div>
+        <header class="camera-header">
+          <button class="camera-close" type="button" data-action="close-camera" aria-label="关闭相机">‹</button>
+          <strong id="camera-document-title">拍摄证件</strong><button class="camera-album-link" type="button" data-action="album">相册上传</button>
+        </header>
+        <div class="camera-guide">
+          <p id="camera-side-title">请扫描证件正面</p>
+          <div class="guide-frame"><i></i><i></i><i></i><i></i><span id="guide-ghost" class="guide-ghost portrait-ghost"></span></div>
+          <p id="camera-hint" class="camera-light-hint">请将证件完整放入框内</p>
+        </div>
+        <div class="camera-side-progress">
+          <div class="camera-side-item is-active" data-camera-side="front"><span class="mini-card portrait-mini"></span><small data-camera-label="front">正面</small></div>
+          <div class="camera-side-item" data-camera-side="back" data-two-sided-only><span class="mini-card emblem-mini">★</span><small data-camera-label="back">反面</small></div>
+        </div>
+        <div class="camera-controls">
+          <span class="control-placeholder"></span>
+          <button class="shutter" type="button" data-action="capture" aria-label="拍照"><span></span></button>
+          <span class="control-placeholder"></span>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="preview" aria-labelledby="preview-title">
+        <header class="topbar">
+          <button class="icon-button" type="button" data-action="back-to-method" aria-label="返回">‹</button>
+          <h2 id="preview-title">确认照片</h2><span class="topbar-spacer"></span>
+        </header>
+        <div class="preview-content">
+          <div class="dual-preview-list">
+            <article class="side-preview-card" data-preview-side="front">
+              <header><strong data-preview-label="front">正面</strong><button type="button" data-action="replace-side" data-side="front">重新拍摄</button></header>
+              <div class="side-photo-stage"><img data-preview-image="front" alt="待识别的证件正面" /></div>
+              <p data-quality-text="front">正在检测照片质量…</p>
+            </article>
+            <article class="side-preview-card" data-preview-side="back" data-two-sided-only>
+              <header><strong data-preview-label="back">反面</strong><button type="button" data-action="replace-side" data-side="back">重新拍摄</button></header>
+              <div class="side-photo-stage"><img data-preview-image="back" alt="待识别的证件反面" /></div>
+              <p data-quality-text="back">正在检测照片质量…</p>
+            </article>
+          </div>
+          <div id="quality-card" class="quality-card" role="status">
+            <span class="quality-icon">✓</span>
+            <span><strong id="quality-title">两面照片已准备好</strong><small id="quality-detail">将分别识别并合并字段</small></span>
+          </div>
+          <div class="preview-tips"><strong>识别前请确认</strong><span>证件四角完整</span><span>文字清晰可见</span><span>画面无明显反光</span></div>
+        </div>
+        <div class="bottom-actions">
+          <button class="secondary-button" type="button" data-action="retake">重新选择</button>
+          <button class="primary-button" type="button" data-action="recognize">开始识别</button>
+        </div>
+      </section>
+
+      <section class="screen loading-screen" data-screen="loading" aria-live="polite">
+        <div class="loader-visual"><span></span><span></span><span></span><span></span><div>OCR</div></div>
+        <h2>正在识别证件信息</h2>
+        <p id="loading-detail">正在识别人像面…</p>
+        <div class="progress-track"><i></i></div>
+        <small>请勿关闭页面</small>
+      </section>
+
+      <section class="screen" data-screen="result" aria-labelledby="result-title">
+        <header class="topbar">
+          <button class="icon-button" type="button" data-action="back-to-method" aria-label="返回当前证件识别页面">‹</button>
+          <h2 id="result-title">核对识别结果</h2><span class="topbar-spacer"></span>
+        </header>
+        <div class="result-content">
+          <div class="result-summary"><span>✓</span><div><strong>识别完成</strong><small id="result-meta">上传耗时 -- 秒 · 模型处理耗时 -- 秒</small></div></div>
+          <form id="result-form" class="field-form"></form>
+          <p class="edit-note">识别结果可能受拍摄环境影响，请务必核对后提交。</p>
+        </div>
+        <div class="bottom-actions single-action"><button class="primary-button" type="submit" form="result-form">确认信息</button></div>
+      </section>
+
+      <section class="screen success-screen" data-screen="success" aria-labelledby="success-title">
+        <div class="success-icon">✓</div>
+        <h2 id="success-title">信息已确认</h2>
+        <p id="success-description">证件信息已完成核对</p>
+        <button class="primary-button" type="button" data-action="restart">继续识别</button>
+      </section>
+    </main>
+
+    <div id="image-viewer" class="image-viewer" role="dialog" aria-modal="true" aria-labelledby="image-viewer-title" hidden>
+      <header>
+        <strong id="image-viewer-title">查看图片</strong>
+        <button type="button" data-action="close-image-viewer" aria-label="关闭大图">×</button>
+      </header>
+      <div id="image-viewer-stage" class="image-viewer-stage">
+        <img id="image-viewer-image" alt="证件大图" />
+        <div id="image-viewer-save-tip" class="image-viewer-save-tip" hidden>可缩放查看，长按图片保存到手机</div>
+      </div>
+      <footer>
+        <button type="button" data-action="zoom-out" aria-label="缩小图片">−</button>
+        <span id="image-viewer-zoom">100%</span>
+        <button type="button" data-action="zoom-in" aria-label="放大图片">＋</button>
+      </footer>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app-loader-v8.js?v=20260825-loading-paint-v9" defer></script>
+  </body>
+</html>
