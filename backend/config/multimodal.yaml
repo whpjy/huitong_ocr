@@ -36,7 +36,7 @@ multimodal:
       type: openai_compatible
       enabled: true
       input_mode: vision
-      base_url: http://192.168.110.160:4406/v1
+      base_url: http://192.168.110.170:4406/v1
       endpoint: /chat/completions
       # 本地服务不校验密钥时使用占位值；环境变量存在时会覆盖它。
       api_key: local

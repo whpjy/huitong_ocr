@@ -57,14 +57,17 @@
     card.append(header);
 
     const fields = element("dl", "field-list");
-    const entries = Object.entries(document.fields || {})
-      .filter(([, value]) => String(value || "").trim());
+    const entries = Object.entries(document.fields || {});
     if (!entries.length) {
       fields.append(element("div", "empty-result", "未抽取到有效字段"));
     } else {
       entries.forEach(([name, value]) => {
         const row = element("div", "field-row");
-        row.append(element("dt", "", name), element("dd", "", value));
+        const normalizedValue = String(value || "").trim();
+        row.append(
+          element("dt", "", name),
+          element("dd", normalizedValue ? "" : "unrecognized-field", normalizedValue || "未识别"),
+        );
         fields.append(row);
       });
     }

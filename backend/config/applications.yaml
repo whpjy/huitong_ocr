@@ -5,7 +5,7 @@ paths:
   data_root: ../../data
 
 applications:
-  max_workers: 3
+  max_workers: 5
   materials:
     id_card_front: DG12
     id_card_back: DG13

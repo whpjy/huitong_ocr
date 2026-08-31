@@ -44,6 +44,7 @@ button,input { font: inherit; }
 .result-card { display: flex; min-height: 0; padding: 14px; flex: 1; flex-direction: column; border: 1px solid #e6ebf2; border-radius: 15px; background: #fbfcfe; }
 .result-card header { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 11px; }.result-card header strong { font-size: 14px; }.result-card header span { color: #687891; font-size: 11px; }
 .field-list { display: grid; align-content: start; gap: 7px; margin: 0; }.field-row { display: grid; grid-template-columns: minmax(76px,.45fr) 1fr; gap: 10px; font-size: 12px; line-height: 1.45; }.field-row dt { color: #8994a7; }.field-row dd { min-width: 0; margin: 0; color: #26344c; overflow-wrap: anywhere; }
+.field-row dd.unrecognized-field { color: #aeb6c3; font-style: italic; }
 .source-files { margin: auto 0 0; padding-top: 12px; border-top: 1px dashed #dfe5ee; color: #99a2b1; font-size: 10px; overflow-wrap: anywhere; }
 .card-warning { margin: 9px 0 0; color: #a96a00; font-size: 11px; }
 .validation-section,.recognition-errors { margin-top: 18px; padding: 20px; border: 1px solid #e1e7f0; border-radius: 18px; background: #fff; }.validation-section h3,.recognition-errors h3 { margin: 0 0 12px; font-size: 16px; }

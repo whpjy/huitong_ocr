@@ -15,7 +15,7 @@ ocr:
     pp_ocrv6:
       type: pp_ocrv6
       enabled: true
-      base_url: http://192.168.110.160:8280
+      base_url: http://192.168.110.170:8280
       endpoint: /layout-parsing
       health_endpoint: /health/ready
       timeout: 120

@@ -23,6 +23,8 @@ def test_application_page_calls_application_recognition_api() -> None:
     assert "data.documents.driver_licenses" in script
     assert "data.documents.vehicle_licenses" in script
     assert "application-files.html" in script
+    assert 'normalizedValue || "未识别"' in script
+    assert '.filter(([, value])' not in script
     html = (WEB_DEMO / "application.html").read_text(encoding="utf-8")
     assert "查看原始图片" in html
     assert 'target="_blank"' in html
