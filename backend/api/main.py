@@ -14,14 +14,20 @@ from typing import Callable
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from starlette.concurrency import run_in_threadpool
 
 from ocr_manager.providers.base import IMAGE_EXTENSIONS
 
 from .image_quality import ImageQualityReport, analyze_image_quality
+from .application_service import (
+    ApplicationNotFoundError,
+    ApplicationRecognitionService,
+)
 from .mobile_config import MobileRecognitionConfig, load_mobile_config
 from .schemas import (
+    ApplicationRecognitionResponse,
+    ApplicationSourceImagesResponse,
     DocumentRecognitionResponse,
     ExtractionTiming,
     MobileRecognitionConfigResponse,
@@ -170,13 +176,18 @@ def create_app(
     service: ExtractionService | None = None,
     mobile_config: MobileRecognitionConfig | None = None,
     image_quality_checker: Callable[..., ImageQualityReport] = analyze_image_quality,
+    application_service: ApplicationRecognitionService | None = None,
 ) -> FastAPI:
     application = FastAPI(
         title="Huitong OCR API",
         version="1.0.0",
         description="面向测试页面的 HunyuanOCR + PP-OCRv6 证件识别接口。",
     )
-    application.state.extraction_service = service or ExtractionService()
+    extraction_service = service or ExtractionService()
+    application.state.extraction_service = extraction_service
+    application.state.application_recognition_service = (
+        application_service or ApplicationRecognitionService(extraction_service)
+    )
     application.state.mobile_recognition_config = mobile_config or load_mobile_config()
     application.state.image_quality_checker = image_quality_checker
 
@@ -229,6 +240,84 @@ def create_app(
             pipeline_type=config.pipeline_type,
             image_quality_enabled=config.image_quality_enabled,
         )
+
+    @application.post(
+        "/api/v1/applications/{application_no}/recognition",
+        response_model=ApplicationRecognitionResponse,
+    )
+    async def recognize_application(
+        request: Request,
+        application_no: str,
+        model_key: str | None = None,
+    ) -> ApplicationRecognitionResponse:
+        mobile_config = request.app.state.mobile_recognition_config
+        try:
+            engine_type, provider = _parse_model_key(
+                model_key or mobile_config.model_key
+            )
+            result = await run_in_threadpool(
+                request.app.state.application_recognition_service.recognize,
+                application_no,
+                engine_type,
+                provider,
+            )
+        except ApplicationNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except (ValueError, KeyError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return ApplicationRecognitionResponse.model_validate(result)
+
+    @application.get(
+        "/api/v1/applications/{application_no}/files",
+        response_model=ApplicationSourceImagesResponse,
+    )
+    async def list_application_source_images(
+        request: Request,
+        application_no: str,
+    ) -> ApplicationSourceImagesResponse:
+        try:
+            result = await run_in_threadpool(
+                request.app.state.application_recognition_service.list_source_images,
+                application_no,
+            )
+        except ApplicationNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return ApplicationSourceImagesResponse.model_validate(result)
+
+    @application.get(
+        "/api/v1/applications/{application_no}/files/{material_code}/{file_name}"
+    )
+    async def view_application_source_file(
+        request: Request,
+        application_no: str,
+        material_code: str,
+        file_name: str,
+        thumbnail: bool = False,
+    ) -> Response:
+        try:
+            service = request.app.state.application_recognition_service
+            if thumbnail:
+                content = await run_in_threadpool(
+                    service.source_thumbnail,
+                    application_no,
+                    material_code,
+                    file_name,
+                )
+                return Response(
+                    content=content,
+                    media_type="image/jpeg",
+                    headers={"Cache-Control": "private, max-age=3600"},
+                )
+            path = await run_in_threadpool(
+                service.source_file, application_no, material_code, file_name
+            )
+        except ApplicationNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return FileResponse(path)
 
     @application.post(
         "/api/v1/recognition/document",

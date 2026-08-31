@@ -207,3 +207,10 @@ html:not([data-document="id_card"]) .camera-side-progress { grid-template-column
   .screen { min-height: calc(100dvh - 48px); }
 }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; } }
+/* Application-number recognition entry. */
+.application-entry-card { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 14px; width: 100%; margin: 4px 0 18px; padding: 16px; border: 1px solid rgba(43,111,247,.18); border-radius: 18px; color: #fff; text-decoration: none; background: linear-gradient(135deg,#2b6ff7,#5596ff); box-shadow: 0 12px 30px rgba(43,111,247,.2); }
+.application-entry-card strong,.application-entry-card small { display: block; }
+.application-entry-card strong { margin-bottom: 4px; font-size: 16px; }
+.application-entry-card small { color: rgba(255,255,255,.8); font-size: 12px; }
+.application-entry-card .chevron { color: #fff; font-size: 26px; }
+.application-entry-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 15px; color: #2b6ff7; background: #fff; font-size: 19px; font-weight: 800; }

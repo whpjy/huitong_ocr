@@ -28,6 +28,9 @@ def test_only_web_demo_business_routes_are_exposed() -> None:
         "/api/v1/mobile/save-image",
         "/api/v1/mobile/save-image/{token}",
         "/api/v1/recognition/document",
+        "/api/v1/applications/{application_no}/recognition",
+        "/api/v1/applications/{application_no}/files",
+        "/api/v1/applications/{application_no}/files/{material_code}/{file_name}",
     }
 
 

@@ -1,0 +1,13 @@
+version: 1
+
+paths:
+  # Relative paths are resolved from this configuration file.
+  data_root: ../../data
+
+applications:
+  max_workers: 3
+  materials:
+    id_card_front: DG12
+    id_card_back: DG13
+    driver_license: DG14
+    vehicle_license: Z002

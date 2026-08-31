@@ -59,6 +59,27 @@ python main.py
 
 也可以在 Windows 双击 `start.bat`。后端文档地址为 `http://127.0.0.1:8000/docs`，测试页面为 `http://127.0.0.1:5173`。
 
+## 申请单三证识别
+
+申请单材料根目录和材料代码配置位于 `backend/config/applications.yaml`，也可以使用
+`APPLICATION_DATA_ROOT` 环境变量覆盖数据根目录。默认目录结构为：
+
+```text
+data/{申请单号}/DG12  # 身份证人像面
+data/{申请单号}/DG13  # 身份证国徽面
+data/{申请单号}/DG14  # 驾驶证
+data/{申请单号}/Z002  # 行驶证
+```
+
+识别接口：
+
+```http
+POST /api/v1/applications/{application_no}/recognition
+```
+
+Web Demo 首页可进入“按申请单号抽取三证”，也可直接访问
+`http://127.0.0.1:5173/application.html`。
+
 ## Docker
 
 ```powershell

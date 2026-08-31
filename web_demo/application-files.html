@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3f6fb" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>申请单原始图片</title>
+    <link rel="stylesheet" href="./application-files.css?v=20260831-v2" />
+  </head>
+  <body>
+    <main class="gallery-shell">
+      <header class="page-toolbar">
+        <a id="back-to-result" class="back-link" href="./application.html"><span aria-hidden="true">←</span> 返回识别结果</a>
+      </header>
+
+      <section class="gallery-heading">
+        <div>
+          <p class="eyebrow">ORIGINAL FILES</p>
+          <h1 id="gallery-title">申请单原始图片</h1>
+          <p>按材料目录展示全部原始图片，点击图片可放大和旋转查看。</p>
+        </div>
+        <span id="gallery-total" class="total-chip">0 张</span>
+      </section>
+
+      <section id="gallery-loading" class="status-panel">正在加载原始图片…</section>
+      <section id="gallery-error" class="status-panel error" role="alert" hidden></section>
+      <section id="source-groups" class="source-groups" hidden></section>
+    </main>
+
+    <section id="image-viewer" class="image-viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title" hidden>
+      <div class="viewer-bar">
+        <div class="viewer-caption">
+          <strong id="viewer-title">原始图片</strong>
+          <span id="viewer-position"></span>
+        </div>
+        <div class="viewer-controls" aria-label="图片操作">
+          <button type="button" data-viewer-action="zoom-out" title="缩小">−</button>
+          <button type="button" data-viewer-action="reset" title="恢复">100%</button>
+          <button type="button" data-viewer-action="zoom-in" title="放大">＋</button>
+          <button type="button" data-viewer-action="rotate-left" title="向左旋转">↶</button>
+          <button type="button" data-viewer-action="rotate-right" title="向右旋转">↷</button>
+          <button type="button" data-viewer-action="close" title="关闭">×</button>
+        </div>
+      </div>
+      <button class="viewer-nav previous" type="button" data-viewer-action="previous" aria-label="上一张">‹</button>
+      <div id="viewer-stage" class="viewer-stage">
+        <img id="viewer-image" alt="" />
+      </div>
+      <button class="viewer-nav next" type="button" data-viewer-action="next" aria-label="下一张">›</button>
+    </section>
+
+    <script src="./application-files.js?v=20260831-v2" defer></script>
+  </body>
+</html>

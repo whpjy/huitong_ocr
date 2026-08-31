@@ -165,6 +165,7 @@ class DocumentRecognitionExecution:
     ocr_elapsed: float
     extraction_elapsed: float
     elapsed: float
+    records: list[dict[str, str]] | None = None
 
 
 @dataclass(frozen=True)
@@ -604,6 +605,7 @@ class ExtractionService:
                     primary.get("multimodal_seconds") or 0.0
                 ),
                 elapsed=time.perf_counter() - started,
+                records=result.records,
             )
         if engine_type == "ocr":
             if len(source_paths) <= 1:
@@ -645,6 +647,7 @@ class ExtractionService:
                 ocr_elapsed=sum(result.elapsed for result in ocr_results),
                 extraction_elapsed=llm_result.elapsed,
                 elapsed=time.perf_counter() - started,
+                records=[llm_result.fields],
             )
         if engine_type != "multimodal":
             raise ValueError("不支持的识别模型类型")
@@ -677,7 +680,7 @@ class ExtractionService:
                     reports=quality_reports,
                 )
         extraction_started = time.perf_counter()
-        fields = client.extract_images(
+        records = client.extract_image_records(
             profile,
             processed_images,
             system_prefix=config.prompts.get("document_system_prefix", ""),
@@ -691,10 +694,11 @@ class ExtractionService:
             provider=client.config.name,
             model=client.config.model,
             text="",
-            fields=fields,
+            fields=records[0],
             ocr_elapsed=gate_ppocr_elapsed,
             extraction_elapsed=extraction_elapsed,
             elapsed=time.perf_counter() - started,
+            records=records,
         )
 
     def recognize(

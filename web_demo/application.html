@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3f6fb" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>申请单识别</title>
+    <link rel="stylesheet" href="./application.css?v=20260831-v4" />
+  </head>
+  <body>
+    <main class="application-shell">
+      <header class="page-toolbar">
+        <a class="back-link" href="./index.html" aria-label="返回证件识别首页"><span aria-hidden="true">←</span> 返回</a>
+      </header>
+
+      <section class="query-panel" aria-labelledby="query-title">
+        <div>
+          <h2 id="query-title">申请单号</h2>
+          <p>自动识别身份证、驾驶证和行驶证</p>
+        </div>
+        <form id="application-form" class="query-form">
+          <label class="visually-hidden" for="application-number">申请单号</label>
+          <input id="application-number" name="application_no" inputmode="numeric" autocomplete="off" maxlength="32" placeholder="例如：1108017659" required />
+          <button id="recognize-button" type="submit">开始抽取</button>
+        </form>
+      </section>
+
+      <section id="application-loading" class="loading-panel" aria-live="polite" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <div><strong>正在识别申请单材料</strong><p>多张证件会逐一识别、去重和关联，请稍候。</p></div>
+      </section>
+      <section id="application-error" class="error-panel" role="alert" hidden></section>
+
+      <section id="application-result" hidden>
+        <header class="result-header">
+          <div><h2 id="result-application-number">识别结果</h2></div>
+          <div class="result-actions">
+            <div id="result-summary" class="summary-chips"></div>
+            <a id="source-gallery-link" class="gallery-link" href="./application-files.html" target="_blank" rel="noopener noreferrer">查看原始图片</a>
+          </div>
+        </header>
+        <div class="result-scroll">
+          <div class="document-columns">
+            <section class="document-column" data-document-column="id_cards">
+              <header><span class="column-icon id-icon">身</span><div><h3>身份证</h3><small>DG12 / DG13</small></div><b data-document-count="id_cards">0</b></header>
+              <div class="document-results" data-document-results="id_cards"></div>
+            </section>
+            <section class="document-column" data-document-column="driver_licenses">
+              <header><span class="column-icon driver-icon">驾</span><div><h3>驾驶证</h3><small>DG14</small></div><b data-document-count="driver_licenses">0</b></header>
+              <div class="document-results" data-document-results="driver_licenses"></div>
+            </section>
+            <section class="document-column" data-document-column="vehicle_licenses">
+              <header><span class="column-icon vehicle-icon">行</span><div><h3>行驶证</h3><small>Z002</small></div><b data-document-count="vehicle_licenses">0</b></header>
+              <div class="document-results" data-document-results="vehicle_licenses"></div>
+            </section>
+          </div>
+        </div>
+        <section id="validation-section" class="validation-section" hidden>
+          <h3>跨证件校验</h3><div id="validation-results"></div>
+        </section>
+        <section id="recognition-errors" class="recognition-errors" hidden>
+          <h3>未完成材料</h3><div id="recognition-error-list"></div>
+        </section>
+      </section>
+    </main>
+    <script src="./application.js?v=20260831-v3" defer></script>
+  </body>
+</html>

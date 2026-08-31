@@ -39,6 +39,81 @@ class FakeRecognitionService:
         )
 
 
+class FakeApplicationRecognitionService:
+    def list_source_images(self, application_no: str) -> dict[str, object]:
+        assert application_no == "1108011200"
+        return {
+            "application_no": application_no,
+            "groups": [
+                {
+                    "material": "id_card_front",
+                    "label": "身份证正面",
+                    "material_code": "DG12",
+                    "files": [
+                        {"name": "front.jpg", "material_code": "DG12"}
+                    ],
+                }
+            ],
+        }
+
+    def recognize(
+        self,
+        application_no: str,
+        engine_type: str,
+        provider: str,
+    ) -> dict[str, object]:
+        assert application_no == "1108011200"
+        assert (engine_type, provider) == ("hybrid", "hunyuan_ocr")
+        return {
+            "application_no": application_no,
+            "status": "completed",
+            "documents": {
+                "id_cards": [],
+                "driver_licenses": [],
+                "vehicle_licenses": [],
+            },
+            "validations": [],
+            "errors": [],
+            "summary": {
+                "id_card_count": 0,
+                "driver_license_count": 0,
+                "vehicle_license_count": 0,
+                "person_count": 0,
+                "duplicate_file_count": 0,
+                "error_count": 0,
+                "missing_documents": ["身份证", "驾驶证", "行驶证"],
+                "elapsed_seconds": 0.01,
+            },
+        }
+
+
+class FakeApplicationFileService(FakeApplicationRecognitionService):
+    def __init__(self, source_path: Path) -> None:
+        self.source_path = source_path
+
+    def source_file(
+        self,
+        application_no: str,
+        material_code: str,
+        file_name: str,
+    ) -> Path:
+        assert (application_no, material_code, file_name) == (
+            "1108011200",
+            "DG14",
+            "驾驶证.jpg",
+        )
+        return self.source_path
+
+    def source_thumbnail(
+        self,
+        application_no: str,
+        material_code: str,
+        file_name: str,
+    ) -> bytes:
+        self.source_file(application_no, material_code, file_name)
+        return b"normalized-thumbnail"
+
+
 def _client(*, model_key: str = "hybrid:hunyuan_ocr") -> tuple[TestClient, FakeRecognitionService]:
     service = FakeRecognitionService()
     config = MobileRecognitionConfig(
@@ -122,3 +197,103 @@ def test_non_id_document_rejects_multiple_files() -> None:
         },
     )
     assert response.status_code == 422
+
+
+def test_application_recognition_endpoint() -> None:
+    service = FakeRecognitionService()
+    config = MobileRecognitionConfig(
+        name="hunyuan_ocr_ppocr",
+        model_key="hybrid:hunyuan_ocr",
+        label="HunyuanOCR + PP-OCRv6",
+    )
+    app = create_app(
+        service=service,
+        mobile_config=config,
+        application_service=FakeApplicationRecognitionService(),
+    )
+
+    response = TestClient(app).post(
+        "/api/v1/applications/1108011200/recognition"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["application_no"] == "1108011200"
+    assert response.json()["summary"]["missing_documents"] == [
+        "身份证",
+        "驾驶证",
+        "行驶证",
+    ]
+
+
+def test_application_source_images_endpoint() -> None:
+    service = FakeRecognitionService()
+    config = MobileRecognitionConfig(
+        name="hunyuan_ocr_ppocr",
+        model_key="hybrid:hunyuan_ocr",
+        label="HunyuanOCR + PP-OCRv6",
+    )
+    app = create_app(
+        service=service,
+        mobile_config=config,
+        application_service=FakeApplicationRecognitionService(),
+    )
+
+    response = TestClient(app).get("/api/v1/applications/1108011200/files")
+
+    assert response.status_code == 200
+    assert response.json()["groups"][0] == {
+        "material": "id_card_front",
+        "label": "身份证正面",
+        "material_code": "DG12",
+        "files": [{"name": "front.jpg", "material_code": "DG12"}],
+    }
+
+
+def test_application_source_file_can_be_viewed_inline(tmp_path: Path) -> None:
+    source = tmp_path / "驾驶证.jpg"
+    source.write_bytes(b"source-image")
+    service = FakeRecognitionService()
+    config = MobileRecognitionConfig(
+        name="hunyuan_ocr_ppocr",
+        model_key="hybrid:hunyuan_ocr",
+        label="HunyuanOCR + PP-OCRv6",
+    )
+    app = create_app(
+        service=service,
+        mobile_config=config,
+        application_service=FakeApplicationFileService(source),
+    )
+
+    response = TestClient(app).get(
+        "/api/v1/applications/1108011200/files/DG14/%E9%A9%BE%E9%A9%B6%E8%AF%81.jpg"
+    )
+
+    assert response.status_code == 200
+    assert response.content == b"source-image"
+    assert response.headers["content-type"] == "image/jpeg"
+    assert "content-disposition" not in response.headers
+
+
+def test_application_source_thumbnail_is_normalized(tmp_path: Path) -> None:
+    source = tmp_path / "驾驶证.jpg"
+    source.write_bytes(b"source-image")
+    service = FakeRecognitionService()
+    config = MobileRecognitionConfig(
+        name="hunyuan_ocr_ppocr",
+        model_key="hybrid:hunyuan_ocr",
+        label="HunyuanOCR + PP-OCRv6",
+    )
+    app = create_app(
+        service=service,
+        mobile_config=config,
+        application_service=FakeApplicationFileService(source),
+    )
+
+    response = TestClient(app).get(
+        "/api/v1/applications/1108011200/files/DG14/%E9%A9%BE%E9%A9%B6%E8%AF%81.jpg?thumbnail=true"
+    )
+
+    assert response.status_code == 200
+    assert response.content == b"normalized-thumbnail"
+    assert response.headers["content-type"] == "image/jpeg"
+    assert response.headers["cache-control"] == "private, max-age=3600"
